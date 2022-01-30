@@ -1,3 +1,3 @@
 # Plasync
 
-Pronounced "Play"-"sink". Plasync is an implementation of asyncronous functions in python.
+Pronounced "Play"-"sink". Plasync is an implementation of asyncronous programming from scratch in python.
