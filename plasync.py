@@ -27,20 +27,20 @@ class EventLoop:
     def run(self):
         EventLoop.active_loop = self
         while self.queue:
+            self.active_task = None
             if task := self.get_next_task():
                 try:
                     self.active_task = task
                     next(task.coro)
                 except StopIteration as exc:
                     continue
-                self.promise(task.coro)
+                self.queue.append(task)
 
     def get_next_task(self) -> Optional[Task]:
         for i, task in enumerate(self.queue):
             if not task.active:
                 if task.waiting_until is not None:
                     if task.waiting_until <= time.time():
-                        print("Times up")
                         self.queue.pop(i)
                         return task
                     return None
@@ -52,7 +52,6 @@ class EventLoop:
 def sleep(seconds: float):
     if loop := EventLoop.active_loop:
         loop.active_task.waiting_until = time.time() + seconds
-        print(loop.active_task)
-        yield
     else:
         raise NoActiveLoopError("Lol you need an active loop in order to sleep.")
+    yield
