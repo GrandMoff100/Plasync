@@ -1,39 +1,29 @@
-import time
-
-from typing import List, Optional
-from queue import Queue
+from plasync import EventLoop, sleep
 
 
-class broroutine:
-    active: Optional[bool] = None
-
-    def __init__(self, function):
-        self.function = function
-
-    def __call__(self, *args, **kwargs):
-        return self.function(*args, **kwargs)
+def main():
+    print("1")
+    print("waiting 10")
+    yield from sleep(10)
+    print("4")
 
 
-class Loop:
-    current_threads: List[broroutine]
-    promises: Queue
-
-    def __init__(self):
-        self.current_threads = []
-        self.promises = Queue()
-        self.waiting = []
-
-    def run(self, task: broroutine):
-        return self.queue.put(task)
-
-    def check_current_thread(self):
-        if self.empty:
-            pass
-
-    @property
-    def empty(self) -> bool:
-        """Returns whether or not"""
-        return len(self.current_threads) == 0
+def two():
+    print("2")
+    print("waiting 11")
+    yield from sleep(11)
+    print("5")
 
 
+def three():
+    print("3")
+    print("waiting 12")
+    yield from sleep(12)
+    print("6")
 
+
+loop = EventLoop()
+loop.promise(main())
+loop.promise(two())
+loop.promise(three())
+loop.run()
